@@ -7,43 +7,46 @@ const Search = () => {
   // Base URL
   const URL = `https://www.superheroapi.com/api.php/4060184407368673/`;
 
+  // Definimos nuestros states
   const [hero, setHeroSearched] = useState(undefined);
-  const [mainPs, setMainPs] = useState("");
-  const [maxPsNum, setMaxPsNum] = useState("");
-  const [psValues, setPsValues] = useState([]);
-  const [psNames, setPsNames] = useState([]);
+  const [ok, setOk] = useState(false);
+
   // Definimos Axios
   const axios = require("axios").default;
 
+    // ps significa powerstats
+  const _maxPsNum = [];
+  const _psValues = [];
+  const _psNames = [];
+
   const findMainPS = () => {
-    // Obtenemos la estadistica mas alta
-    setMaxPsNum(
-      Math.max(
-        hero.powerstats.intelligence,
-        hero.powerstats.strength,
-        hero.powerstats.speed,
-        hero.powerstats.durability,
-        hero.powerstats.power,
-        hero.powerstats.combat
-      )
-    );
-    // obtenemos los valores de todas las estadisticas
-    setPsValues(Object.values(hero.powerstats));
-    // obtenemos los nombres de las propiedades como strings
-    setPsNames(Object.getOwnPropertyNames(hero.powerstats));
-
-    /*
-        Como psValues y psNames, comparten el mismo orden, mediante array.indexOf(value),
-        podemos encontrar la posicion en el arreglo del valor maximo psValues.indexOf(maxPsNum.toString()).
-        Convertimos este valor a string debido a que los datos de psValues, son strings.
-
-        De esta forma podemos extraer el nombre de la propiedad del objeto con el numero mas alto:
-          setState(ArrayOfNames[ArrayofValues.indexOf(maxNumber.toString())])
-          setMainPs(psNames[psValues.indexOf(maxPsNum.toString())]);
-    */
+    for (let i in hero) {
+      // Obtenemos la estadistica mas alta
+      _maxPsNum.push(
+        Math.max(
+          hero[i].powerstats.intelligence,
+          hero[i].powerstats.strength,
+          hero[i].powerstats.speed,
+          hero[i].powerstats.durability,
+          hero[i].powerstats.power,
+          hero[i].powerstats.combat
+        )
+      );
+      // Obtenemos los valores de las propiedades
+      _psValues.push(Object.values(hero[i].powerstats));
+      // Obtenemos los nombres de las propiedades en forma de string
+      _psNames.push(Object.getOwnPropertyNames(hero[i].powerstats));
+      // Conseguimos la posicion de la powerstat dominante
+      const index = _psValues[i].indexOf(_maxPsNum[i].toString());
+      const names = _psNames[i];
+      // Definimos una nueva propiedad con el valor del powerstat dominante, en forma de string
+      Object.defineProperty(hero[i], "mainPs", {
+        value: names[index],
+      });
+    }
   };
 
-  //   use Effect que solo actua en la actualizacion
+  // useEffect que solo actua en la actualizacion
   const isInitialMount = useRef(true);
   useEffect(() => {
     if (isInitialMount.current) {
@@ -53,13 +56,6 @@ const Search = () => {
     }
   }, [hero]);
 
-  useEffect(() => {
-    if (isInitialMount.current) {
-      isInitialMount.current = false;
-    } else {
-      setMainPs(psNames[psValues.indexOf(maxPsNum.toString())]);
-    }
-  }, [psNames]);
   return (
     <div>
       <div className="container">
@@ -76,14 +72,14 @@ const Search = () => {
                   .then(function (response) {
                     // handle success
                     console.log(response);
-                    setHeroSearched(response.data.results[0]);
+                    setHeroSearched(response.data.results);
                   })
                   .catch(function (error) {
                     // handle error
                     console.log(error);
                   })
                   .then(function () {
-                    // always executed
+                    setOk(!ok);
                   });
                 setSubmitting(false);
               }, 390);
@@ -105,17 +101,18 @@ const Search = () => {
           </Formik>
         </div>
         <section>
-          {hero != undefined ? (
-            <Card style={{ width: "18rem" }}>
-              <Card.Img variant="top" src={hero.image.url} />
-              <Card.Body>
-                <Card.Title>{hero.name}</Card.Title>
-                <Card.Text>{hero.biography.alignment}</Card.Text>
-                <Card.Text>{mainPs}</Card.Text>
-                <Button variant="success">ADD TO TEAM</Button>
-              </Card.Body>
-            </Card>
-          ) : null}
+          {hero &&
+            hero.map((hero) => (
+              <Card key={hero.id} style={{ width: "18rem" }}>
+                <Card.Img variant="top" src={hero.image.url} />
+                <Card.Body>
+                  <Card.Title>{hero.name}</Card.Title>
+                  <Card.Text>{hero.biography.alignment}</Card.Text>
+                  <Card.Text>{hero.mainPs}</Card.Text>
+                  <Button variant="success">ADD TO TEAM</Button>
+                </Card.Body>
+              </Card>
+            ))}
         </section>
       </div>
     </div>
