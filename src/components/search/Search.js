@@ -21,35 +21,35 @@ const Search = () => {
   const _psValues = [];
   const _psNames = [];
 
-  const findMainPS = () => {
-    for (let i in hero) {
+  const findMainPS = (state) => {
+    for (let i in state) {
       // Obtenemos la estadistica mas alta
       _maxPsNum.push(
         Math.max(
-          hero[i].powerstats.intelligence === "null"
+          state[i].powerstats.intelligence === "null"
             ? 0
-            : hero[i].powerstats.intelligence,
-          hero[i].powerstats.strength === "null"
+            : state[i].powerstats.intelligence,
+          state[i].powerstats.strength === "null"
             ? 0
-            : hero[i].powerstats.strength,
-          hero[i].powerstats.speed === "null" ? 0 : hero[i].powerstats.speed,
-          hero[i].powerstats.durability === "null"
+            : state[i].powerstats.strength,
+          state[i].powerstats.speed === "null" ? 0 : state[i].powerstats.speed,
+          state[i].powerstats.durability === "null"
             ? 0
-            : hero[i].powerstats.durability,
-          hero[i].powerstats.power === "null" ? 0 : hero[i].powerstats.power,
-          hero[i].powerstats.combat === "null" ? 0 : hero[i].powerstats.combat
+            : state[i].powerstats.durability,
+          state[i].powerstats.power === "null" ? 0 : state[i].powerstats.power,
+          state[i].powerstats.combat === "null" ? 0 : state[i].powerstats.combat
         )
       );
       // Obtenemos los valores de las propiedades
-      _psValues.push(Object.values(hero[i].powerstats));
+      _psValues.push(Object.values(state[i].powerstats));
       // Obtenemos los nombres de las propiedades en forma de string
-      _psNames.push(Object.getOwnPropertyNames(hero[i].powerstats));
+      _psNames.push(Object.getOwnPropertyNames(state[i].powerstats));
       // Conseguimos la posicion de la powerstat dominante
       const index = _psValues[i].indexOf(_maxPsNum[i].toString());
       const names = _psNames[i];
       // Definimos una nueva propiedad con el valor del powerstat dominante, en forma de string
-      Object.defineProperty(hero[i], "mainPs", {
-        value: names[index] || "none",
+      Object.defineProperty(state[i], "mainPs", {
+        value: names[index] || "unknown",
       });
     }
   };
@@ -123,7 +123,8 @@ const Search = () => {
         // handle error
         console.log(error);
       })
-      .then(function () {
+      .then(function () { 
+        setOk(!ok); 
       });
   }
   // useEffect que solo actua en la actualizacion
@@ -132,7 +133,7 @@ const Search = () => {
     if (isInitialMount.current) {
       isInitialMount.current = false;
     } else {
-      findMainPS();
+      findMainPS(hero); 
     }
   }, [hero]);
 
@@ -140,6 +141,9 @@ const Search = () => {
     setSelectedHeroes(_selectedHeroes);
     getAllHeroes();
   }, []);
+  useEffect(() => {
+    findMainPS(allHeroes);
+  }, [allHeroes]);
 
   return (
     <div>
