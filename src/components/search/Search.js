@@ -3,6 +3,13 @@ import { Button, Card } from "react-bootstrap";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 
+export const deleteHero = (id, key, state, array) => {
+  // filtramos los heroes que NO queremos eliminar
+  const filteredHeroes = array.filter((e) => e.id != id);
+  // Actualizamos el localstorage
+  localStorage.setItem(key, JSON.stringify(filteredHeroes));
+  state(filteredHeroes);
+};
 const Search = () => {
   // Base URL
   const URL = `https://www.superheroapi.com/api.php/4060184407368673/`;
@@ -10,7 +17,7 @@ const Search = () => {
   // Definimos nuestros states
   const [hero, setHeroSearched] = useState(undefined);
   const [selectedHeroes, setSelectedHeroes] = useState(undefined);
-  const [allHeroes, setAllHeroes] = useState(undefined)
+  const [allHeroes, setAllHeroes] = useState(undefined);
   const [ok, setOk] = useState(false);
 
   // Definimos Axios
@@ -19,7 +26,14 @@ const Search = () => {
   // ps significa powerstats
   const _maxPsNum = [];
   const _psValues = [];
-  const _psNames = [];
+  const _psNames = [
+    "Intelligence",
+    "Strength",
+    "Speed",
+    "Durability",
+    "Power",
+    "Combat",
+  ];
 
   const findMainPS = (state) => {
     for (let i in state) {
@@ -43,13 +57,12 @@ const Search = () => {
       // Obtenemos los valores de las propiedades
       _psValues.push(Object.values(state[i].powerstats));
       // Obtenemos los nombres de las propiedades en forma de string
-      _psNames.push(Object.getOwnPropertyNames(state[i].powerstats));
+      // _psNames.push(Object.getOwnPropertyNames(state[i].powerstats));
       // Conseguimos la posicion de la powerstat dominante
       const index = _psValues[i].indexOf(_maxPsNum[i].toString());
-      const names = _psNames[i];
       // Definimos una nueva propiedad con el valor del powerstat dominante, en forma de string
       Object.defineProperty(state[i], "mainPs", {
-        value: names[index] || "unknown",
+        value: _psNames[index] || "unknown",
       });
     }
   };
@@ -97,22 +110,16 @@ const Search = () => {
       });
   };
 
-  const deleteHero = (id) => {
-    // filtramos los heroes que NO queremos eliminar
-    const filteredHeroes = _selectedHeroes.filter((e) => e.id != id);
-    // Actualizamos el localstorage
-    localStorage.setItem("selectedHeroesKey", JSON.stringify(filteredHeroes));
-    setSelectedHeroes(filteredHeroes);
-  };
-  const _teams=JSON.parse(localStorage.getItem("teamsKey")) || [];
-  const confirmTeam = ()=>{
-      _teams.push(selectedHeroes)
+  const _teams = JSON.parse(localStorage.getItem("teamsKey")) || [];
+  const confirmTeam = () => {
+    _teams.push(selectedHeroes);
     localStorage.setItem("teamsKey", JSON.stringify(_teams));
     localStorage.setItem("selectedHeroesKey", JSON.stringify([]));
     setSelectedHeroes(undefined);
-  }
-  const getAllHeroes = ()=>{
-      axios
+  };
+
+  const getAllHeroes = () => {
+    axios
       .get(`${URL}search/a`)
       .then(function (response) {
         // handle success
@@ -123,17 +130,17 @@ const Search = () => {
         // handle error
         console.log(error);
       })
-      .then(function () { 
-        setOk(!ok); 
+      .then(function () {
+        setOk(!ok);
       });
-  }
+  };
   // useEffect que solo actua en la actualizacion
   const isInitialMount = useRef(true);
   useEffect(() => {
     if (isInitialMount.current) {
       isInitialMount.current = false;
     } else {
-      findMainPS(hero); 
+      findMainPS(hero);
     }
   }, [hero]);
 
@@ -160,7 +167,6 @@ const Search = () => {
                   .get(`${URL}search/${values.search}`)
                   .then(function (response) {
                     // handle success
-                    console.log(response);
                     setHeroSearched(response.data.results);
                   })
                   .catch(function (error) {
@@ -197,24 +203,32 @@ const Search = () => {
                 <p>{teamMember.name}</p>
                 <Button
                   onClick={() => {
-                    deleteHero(teamMember.id);
+                    deleteHero(teamMember.id, "selectedHeroesKey", setSelectedHeroes, _selectedHeroes);
                   }}
                 >
                   Delete
                 </Button>
               </div>
             ))}
-          <Button onClick={confirmTeam} className="my-3 ml-auto">Confirm team</Button>
+          <Button onClick={confirmTeam} className="my-3 ml-auto">
+            Confirm team
+          </Button>
         </section>
         <section className="row">
           {hero &&
             hero.map((hero) => (
-              <div className="col-lg-4 col-md-6 col-sm-12"  key={hero.id} >
-                <Card className='w-100 h-100'>
+              <div className="col-lg-4 col-md-6 col-sm-12" key={hero.id}>
+                <Card className="w-100 h-100">
                   <Card.Img variant="top" src={hero.image.url} />
                   <Card.Body>
                     <Card.Title>{hero.name}</Card.Title>
-                    <Card.Text>{hero.biography.alignment}</Card.Text>
+                    <Card.Text>
+                      {hero.biography.alignment === "good"
+                        ? "Hero"
+                        : hero.biography.alignment === "bad"
+                        ? "Villain"
+                        : "Neutral"}
+                    </Card.Text>
                     <Card.Text>{hero.mainPs}</Card.Text>
                     <Button
                       onClick={() => {
@@ -233,12 +247,18 @@ const Search = () => {
         <section className="row">
           {allHeroes &&
             allHeroes.map((hero) => (
-              <div className="col-lg-4 col-md-6 col-sm-12"  key={hero.id+5555} >
-                <Card className='w-100 h-100'>
+              <div className="col-lg-4 col-md-6 col-sm-12" key={hero.id + 5555}>
+                <Card className="w-100 h-100">
                   <Card.Img variant="top" src={hero.image.url} />
                   <Card.Body>
                     <Card.Title>{hero.name}</Card.Title>
-                    <Card.Text>{hero.biography.alignment}</Card.Text>
+                    <Card.Text>
+                      {hero.biography.alignment === "good"
+                        ? "Hero"
+                        : hero.biography.alignment === "bad"
+                        ? "Villain"
+                        : "Neutral"}
+                    </Card.Text>
                     <Card.Text>{hero.mainPs}</Card.Text>
                     <Button
                       onClick={() => {
