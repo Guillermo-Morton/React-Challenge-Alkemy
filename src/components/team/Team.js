@@ -1,7 +1,19 @@
-import React, { useState, useEffect, Fragment } from "react";
-import { Card, Button } from "react-bootstrap";
+import React, { useState, useEffect } from "react";
 import { withRouter, useLocation } from "react-router-dom";
-import './team.scss'
+import {
+  TeamContainer,
+  HeroName,
+  HeroContainer,
+  Appearance,
+  Details,
+  HeroImage,
+  InnerBorder,
+  InnerBorder2,
+  InnerBorder3,
+  AddHeroe,
+  Title,
+  Btn,
+} from "./TeamElements";
 const Team = (props) => {
   const [teams, setTeams] = useState([]);
   const [test, setTest] = useState([]);
@@ -53,18 +65,18 @@ const Team = (props) => {
     }
     state(filteredTeams);
   };
-  const completeTeam = (id, key, state, array)=>{
-    const incompleteTeam = array[id].heroes
+  const completeTeam = (id, key, state, array) => {
+    const incompleteTeam = array[id].heroes;
     localStorage.setItem(key, JSON.stringify(incompleteTeam));
     let _filteredTeams = [];
-    const filteredTeam = array.filter((e)=> e.id!=id)
-    for(let i in filteredTeam){
-      _filteredTeams.push(filteredTeam[i].heroes)
+    const filteredTeam = array.filter((e) => e.id != id);
+    for (let i in filteredTeam) {
+      _filteredTeams.push(filteredTeam[i].heroes);
     }
-    localStorage.setItem('teamsKey', JSON.stringify(_filteredTeams));
-    state(filteredTeam)
-    
-  }
+    localStorage.setItem("teamsKey", JSON.stringify(_filteredTeams));
+    state(filteredTeam);
+    props.history.push('/search')
+  };
   const getTeamStats = () => {
     for (let e of _teams) {
       let ps = [];
@@ -122,13 +134,16 @@ const Team = (props) => {
       _fisicalFeatures.push(fisicalFeatures);
     }
   };
-  const token= JSON.parse(localStorage.getItem('tokenKey'))||''
-  const redirectLogin = ()=>{
-    console.log(token)
-    if(token!='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiZW1haWwiOiJjaGFsbGVuZ2VAYWxrZW15Lm9yZyIsImlhdCI6MTUxNjIzOTAyMn0.ilhFPrG0y7olRHifbjvcMOlH7q2YwlegT0f4aSbryBE'){
-    props.history.push('/login')
+  const token = JSON.parse(localStorage.getItem("tokenKey")) || "";
+  const redirectLogin = () => {
+    console.log(token);
+    if (
+      token !=
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiZW1haWwiOiJjaGFsbGVuZ2VAYWxrZW15Lm9yZyIsImlhdCI6MTUxNjIzOTAyMn0.ilhFPrG0y7olRHifbjvcMOlH7q2YwlegT0f4aSbryBE"
+    ) {
+      props.history.push("/login");
     }
-  }
+  };
   const createTeamObject = () => {
     getTeamStats();
     getTeamFisicalFeatures();
@@ -145,28 +160,26 @@ const Team = (props) => {
       _team.push(team);
     }
     setTeams(_team);
-    // localStorage.setItem("teamObjectKey", JSON.stringify(_team));
   };
 
   useEffect(() => {
     createTeamObject();
   }, [test]);
 
-   // useEffect que actua cuando cambia la URL
-   const location = useLocation();
-   useEffect(() => {
-    redirectLogin()
-   }, [location.pathname]);
+  // useEffect que actua cuando cambia la URL
+  const location = useLocation();
+  useEffect(() => {
+    redirectLogin();
+  }, [location.pathname]);
 
   return (
     <div className="container">
       {teams &&
         teams.map((team) => (
           <div>
-            <div key={team.heroes[0].id + 745} className="row my-5">
-              <div className="col-lg-12 text-center my-3">
-                <h3 className="my-3">Team powerStats</h3>
-                <h4 className="my-3">
+            <div key={team.heroes[0].id + 745} className="row">
+              <div className="text-center col-12">
+                <h4 className="m-3">
                   Dominance:{" "}
                   {team.powerstats[0] === 0 &&
                   team.powerstats[1] === 0 &&
@@ -177,7 +190,7 @@ const Team = (props) => {
                     ? "Unknown"
                     : " " + team.dominance}{" "}
                 </h4>
-                <div className="my-4">
+                <div className="my-4 d-flex flex-wrap justify-content-center">
                   <h5 className="d-inline mx-3">
                     Average weight: {team.fisicalFeatures.weight}
                   </h5>
@@ -185,127 +198,175 @@ const Team = (props) => {
                     Average height: {team.fisicalFeatures.height}
                   </h5>
                 </div>
-                <p className="d-inline mx-3">
-                  Inteligence:
-                  {team.powerstats[0] === "null"
-                    ? "Unknown"
-                    : " " + team.powerstats[0]}
-                </p>
-                <p className="d-inline mx-3">
-                  Strength:
-                  {team.powerstats[1] === "null"
-                    ? "Unknown"
-                    : " " + team.powerstats[1]}
-                </p>
-                <p className="d-inline mx-3">
-                  Speed:
-                  {team.powerstats[2] === "null"
-                    ? "Unknown"
-                    : " " + team.powerstats[2]}
-                </p>
-                <p className="d-inline mx-3">
-                  Durability:
-                  {team.powerstats[3] === "null"
-                    ? "Unknown"
-                    : " " + team.powerstats[3]}
-                </p>
-                <p className="d-inline mx-3">
-                  Power:
-                  {team.powerstats[4] === "null"
-                    ? "Unknown"
-                    : " " + team.powerstats[4]}
-                </p>
-                <p className="d-inline mx-3">
-                  Combat:
-                  {team.powerstats[5] === "null"
-                    ? "Unknown"
-                    : " " + team.powerstats[5]}
-                </p>
+                <div className='d-flex flex-wrap justify-content-center'>
+                  <p className="d-inline mx-3">
+                    Inteligence:
+                    {team.powerstats[0] === "null"
+                      ? "Unknown"
+                      : " " + team.powerstats[0]}
+                  </p>
+                  <p className="d-inline mx-3">
+                    Strength:
+                    {team.powerstats[1] === "null"
+                      ? "Unknown"
+                      : " " + team.powerstats[1]}
+                  </p>
+                  <p className="d-inline mx-3">
+                    Speed:
+                    {team.powerstats[2] === "null"
+                      ? "Unknown"
+                      : " " + team.powerstats[2]}
+                  </p>
+                  <p className="d-inline mx-3">
+                    Durability:
+                    {team.powerstats[3] === "null"
+                      ? "Unknown"
+                      : " " + team.powerstats[3]}
+                  </p>
+                  <p className="d-inline mx-3">
+                    Power:
+                    {team.powerstats[4] === "null"
+                      ? "Unknown"
+                      : " " + team.powerstats[4]}
+                  </p>
+                  <p className="d-inline mx-3">
+                    Combat:
+                    {team.powerstats[5] === "null"
+                      ? "Unknown"
+                      : " " + team.powerstats[5]}
+                  </p>
+                </div>
               </div>
-              {team.heroes &&
-                team.heroes.map((hero) => (
-                  <div key={hero.id + 432} className="col-lg-4">
-                    <Card className="text-center w-100 h-100">
-                      <Card.Body>
-                        <Card.Title>{hero.name}</Card.Title>
-                      </Card.Body>
-                      <Fragment>
-                      <Card.Img className='img' variant="top" src={hero.image.url} />
-                      <div className='popDetails'>
-                        <p>{hero.appearance.weight[1]==='0 kg'? 'Unknown':hero.appearance.weight[1] }</p>
-                        <p>{hero.appearance.height[1]==='0 cm'? 'Unknown':hero.appearance.height[1] }</p>
-                        <p>{hero.biography.aliases[0]==='-'?'Unknown':hero.biography.aliases[0]}</p>
-                        <p>{hero.appearance['eye-color']}</p>
-                        <p>{hero.appearance['hair-color']}</p>
-                        <p className='px-5'>{hero.work.occupation}</p>
-                      </div>
-                      </Fragment>
-                      <Card.Body>
-                        <Card.Title>
-                          {hero.biography.alignment === "good"
-                            ? "Hero"
-                            : hero.biography.alignment === "bad"
-                            ? "Villain"
-                            : "Neutral"}{" "}
-                          powerstats
-                        </Card.Title>
-                        <div className="row">
-                          <div className="col-lg-6">
+              <TeamContainer>
+                <InnerBorder />
+                <InnerBorder2 />
+                <InnerBorder3 />
+                  {team.heroes &&
+                    team.heroes.map((hero) => (
+                      <HeroContainer
+                        key={hero.id + 432}
+                        className="text-center col-lg-4 col-md-6 col-12"
+                      >
+                        <HeroName>{hero.name}</HeroName>
+                        <Appearance>
+                          <HeroImage src={hero.image.url} />
+                          <Details className="popDetails">
                             <p>
-                              Intelligence:{" "}
-                              {hero.powerstats.intelligence === "null"
-                                ? "Unknown"
-                                : hero.powerstats.intelligence}
+                              {hero.appearance.weight[1] === "0 kg"
+                                ? "Weight: 75 kg"
+                                : 'Weight: ' +hero.appearance.weight[1]}
                             </p>
                             <p>
-                              Strength:{" "}
-                              {hero.powerstats.strength === "null"
-                                ? "Unknown"
-                                : hero.powerstats.strength}
+                              {hero.appearance.height[1] === "0 cm"
+                                ? "Heigth: 170 cm"
+                                : 'Heigth: ' +hero.appearance.height[1]}
                             </p>
                             <p>
-                              Speed:{" "}
-                              {hero.powerstats.speed === "null"
-                                ? "Unknown"
-                                : hero.powerstats.speed}
+                              {hero.biography.aliases[0] === "-"
+                                ? "Alias: Unknown"
+                                : 'Alias: '+hero.biography.aliases[0]}
                             </p>
+                            <p>
+                              {hero.appearance["eye-color"] === "-"
+                                ? "Unknown"
+                                : hero.appearance["eye-color"]+' eyes'}
+                            </p>
+                            <p>
+                              {hero.appearance["hair-color"] === "-"
+                                ? "Unknown"
+                                : hero.appearance["hair-color"]==='No Hair' ? hero.appearance["hair-color"] : hero.appearance["hair-color"]+' Hair'}
+                            </p>
+                            <p className="px-5">
+                              {hero.work.occupation === "-"
+                                ? "Ocupation: Unknown"
+                                : 'Ocupation: ' + hero.work.occupation}
+                            </p>
+                          </Details>
+                        </Appearance>
+                        <div>
+                          <Title className="pb-5">
+                            {hero.biography.alignment === "good"
+                              ? "Hero"
+                              : hero.biography.alignment === "bad"
+                              ? "Villain"
+                              : "Neutral"}{" "}
+                            powerstats
+                          </Title>
+                          <div className="row">
+                            <div className="col-6">
+                              <p className="mb-4">
+                                Intelligence:{" "}
+                                {hero.powerstats.intelligence === "null"
+                                  ? "Unknown"
+                                  : hero.powerstats.intelligence}
+                              </p>
+                              <p className="mb-4">
+                                Strength:{" "}
+                                {hero.powerstats.strength === "null"
+                                  ? "Unknown"
+                                  : hero.powerstats.strength}
+                              </p>
+                              <p className="mb-4">
+                                Speed:{" "}
+                                {hero.powerstats.speed === "null"
+                                  ? "Unknown"
+                                  : hero.powerstats.speed}
+                              </p>
+                            </div>
+                            <div className="col-6">
+                              <p className="mb-4">
+                                Durability:{" "}
+                                {hero.powerstats.durability === "null"
+                                  ? "Unknown"
+                                  : hero.powerstats.durability}
+                              </p>
+                              <p className="mb-4">
+                                Power:{" "}
+                                {hero.powerstats.power === "null"
+                                  ? "Unknown"
+                                  : hero.powerstats.power}
+                              </p>
+                              <p className="mb-4">
+                                Combat:{" "}
+                                {hero.powerstats.combat === "null"
+                                  ? "Unknown"
+                                  : hero.powerstats.combat}
+                              </p>
+                            </div>
                           </div>
-                          <div className="col-lg-6">
-                            <p>
-                              Durability:{" "}
-                              {hero.powerstats.durability === "null"
-                                ? "Unknown"
-                                : hero.powerstats.durability}
-                            </p>
-                            <p>
-                              Power:{" "}
-                              {hero.powerstats.power === "null"
-                                ? "Unknown"
-                                : hero.powerstats.power}
-                            </p>
-                            <p>
-                              Combat:{" "}
-                              {hero.powerstats.combat === "null"
-                                ? "Unknown"
-                                : hero.powerstats.combat}
-                            </p>
-                          </div>
+                          <Btn
+                            onClick={() => {
+                              deleteHero(hero.id, "teamsKey", setTest, _teams);
+                            }}
+                          >
+                            Delete
+                          </Btn>
                         </div>
-                        <Button
-                          onClick={() => {
-                            deleteHero(hero.id, "teamsKey", setTest, _teams);
-                          }}
-                          className="mx-2"
-                          variant="danger"
-                        >
-                          Delete
-                        </Button>
-                      </Card.Body>
-                    </Card>
-                  </div>
-                ))}
+                      </HeroContainer>
+                    ))}
+
+                {team.heroes.length < 6 ? (
+                  <AddHeroe className='text-center col-lg-4 col-md-6 col-12'>
+                    <h4 class='pt-5'>
+                      Looks like your team is incomplete
+                    </h4>
+                    <Btn
+                      onClick={() => {
+                        completeTeam(
+                          team.id,
+                          "selectedHeroesKey",
+                          setTeams,
+                          teams
+                        );
+                      }}
+                      className="w-50"
+                    >
+                      Complete Team
+                    </Btn>
+                  </AddHeroe>
+                ) : null}
+              </TeamContainer>
             </div>
-            {team.heroes.length < 6 ? <Button onClick={()=>{completeTeam(team.id, 'selectedHeroesKey', setTeams, teams)}}>Complete Team {team.id}</Button> : null}
           </div>
         ))}
     </div>

@@ -4,8 +4,8 @@ import { NavLink } from "react-router-dom";
 
 const NavB = () => {
   return (
-    <div className='container'>
       <Navbar bg="light" expand="lg">
+        <div className='container'>
         <Navbar.Brand href="#home">Heroes Challenge</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
@@ -15,8 +15,8 @@ const NavB = () => {
             <NavLink className='nav-link' exact={true} to='/login'>Login</NavLink>
           </Nav>
         </Navbar.Collapse>
+        </div>
       </Navbar>
-    </div>
   );
 };
 

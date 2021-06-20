@@ -4,7 +4,7 @@ import Team from './team/Team';
 const Home = () => {
     return (
         <div className='container'>
-           <h2 className='font-weight-light my-3'>TEAMS</h2>
+           <h2 className='font-weight-light text-center mt-5'>TEAMS</h2>
            <Team></Team>
         </div>
     );
