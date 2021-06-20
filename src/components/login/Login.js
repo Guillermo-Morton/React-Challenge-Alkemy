@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Button } from "react-bootstrap";
 import { Formik, Field, Form, ErrorMessage } from "formik";
+import { withRouter } from "react-router";
 import * as Yup from "yup";
 
-const Login = () => {
+const Login = (props) => {
   // const token= '4060184407368673'
   // const URL=`https://superheroapi.com/api/${token}/`
 
@@ -32,6 +33,8 @@ const Login = () => {
           })
           .then(function (response) {
             setToken(response.data.token);
+            localStorage.setItem("tokenKey", JSON.stringify(token));
+            props.history.push('/')
           })
           .catch(function (error) {
             console.log(error);
@@ -39,7 +42,6 @@ const Login = () => {
       } else {
         console.log("Datos incorrectos");
       }
-      localStorage.setItem("tokenKey", JSON.stringify(token));
     }
   }, [token, passed]);
   return (
@@ -87,4 +89,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default withRouter(Login);

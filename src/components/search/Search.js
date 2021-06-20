@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Button, Card } from "react-bootstrap";
 import { Formik, Field, Form, ErrorMessage } from "formik";
+import { withRouter, useLocation } from "react-router-dom";
 import * as Yup from "yup";
 
 export const deleteHero = (id, key, state, array) => {
@@ -10,7 +11,7 @@ export const deleteHero = (id, key, state, array) => {
   localStorage.setItem(key, JSON.stringify(filteredHeroes));
   state(filteredHeroes);
 };
-const Search = () => {
+const Search = (props) => {
   // Base URL
   const URL = `https://www.superheroapi.com/api.php/4060184407368673/`;
 
@@ -134,6 +135,16 @@ const Search = () => {
         setOk(!ok);
       });
   };
+  const token = JSON.parse(localStorage.getItem("tokenKey")) || "";
+  const redirectLogin = () => {
+    console.log(token);
+    if (
+      token !=
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiZW1haWwiOiJjaGFsbGVuZ2VAYWxrZW15Lm9yZyIsImlhdCI6MTUxNjIzOTAyMn0.ilhFPrG0y7olRHifbjvcMOlH7q2YwlegT0f4aSbryBE"
+    ) {
+      props.history.push("/login");
+    }
+  };
   // useEffect que solo actua en la actualizacion
   const isInitialMount = useRef(true);
   useEffect(() => {
@@ -151,6 +162,11 @@ const Search = () => {
   useEffect(() => {
     findMainPS(allHeroes);
   }, [allHeroes]);
+  // useEffect que actua cuando cambia la URL
+  const location = useLocation();
+  useEffect(() => {
+    redirectLogin();
+  }, [location.pathname]);
 
   return (
     <div>
@@ -203,7 +219,12 @@ const Search = () => {
                 <p>{teamMember.name}</p>
                 <Button
                   onClick={() => {
-                    deleteHero(teamMember.id, "selectedHeroesKey", setSelectedHeroes, _selectedHeroes);
+                    deleteHero(
+                      teamMember.id,
+                      "selectedHeroesKey",
+                      setSelectedHeroes,
+                      _selectedHeroes
+                    );
                   }}
                 >
                   Delete
@@ -278,4 +299,4 @@ const Search = () => {
   );
 };
 
-export default Search;
+export default withRouter(Search);

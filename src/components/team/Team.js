@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import { Card, Button } from "react-bootstrap";
-
-const Team = () => {
+import { withRouter, useLocation } from "react-router-dom";
+import './team.scss'
+const Team = (props) => {
   const [teams, setTeams] = useState([]);
   const [test, setTest] = useState([]);
-
   const _teams = JSON.parse(localStorage.getItem("teamsKey")) || [];
 
   const _psValues = [];
@@ -122,7 +122,13 @@ const Team = () => {
       _fisicalFeatures.push(fisicalFeatures);
     }
   };
-
+  const token= JSON.parse(localStorage.getItem('tokenKey'))||''
+  const redirectLogin = ()=>{
+    console.log(token)
+    if(token!='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiZW1haWwiOiJjaGFsbGVuZ2VAYWxrZW15Lm9yZyIsImlhdCI6MTUxNjIzOTAyMn0.ilhFPrG0y7olRHifbjvcMOlH7q2YwlegT0f4aSbryBE'){
+    props.history.push('/login')
+    }
+  }
   const createTeamObject = () => {
     getTeamStats();
     getTeamFisicalFeatures();
@@ -145,6 +151,12 @@ const Team = () => {
   useEffect(() => {
     createTeamObject();
   }, [test]);
+
+   // useEffect que actua cuando cambia la URL
+   const location = useLocation();
+   useEffect(() => {
+    redirectLogin()
+   }, [location.pathname]);
 
   return (
     <div className="container">
@@ -217,7 +229,17 @@ const Team = () => {
                       <Card.Body>
                         <Card.Title>{hero.name}</Card.Title>
                       </Card.Body>
-                      <Card.Img variant="top" src={hero.image.url} />
+                      <Fragment>
+                      <Card.Img className='img' variant="top" src={hero.image.url} />
+                      <div className='popDetails'>
+                        <p>{hero.appearance.weight[1]==='0 kg'? 'Unknown':hero.appearance.weight[1] }</p>
+                        <p>{hero.appearance.height[1]==='0 cm'? 'Unknown':hero.appearance.height[1] }</p>
+                        <p>{hero.biography.aliases[0]==='-'?'Unknown':hero.biography.aliases[0]}</p>
+                        <p>{hero.appearance['eye-color']}</p>
+                        <p>{hero.appearance['hair-color']}</p>
+                        <p className='px-5'>{hero.work.occupation}</p>
+                      </div>
+                      </Fragment>
                       <Card.Body>
                         <Card.Title>
                           {hero.biography.alignment === "good"
@@ -269,9 +291,6 @@ const Team = () => {
                             </p>
                           </div>
                         </div>
-                        <Button className="mx-2" variant="warning">
-                          Details
-                        </Button>
                         <Button
                           onClick={() => {
                             deleteHero(hero.id, "teamsKey", setTest, _teams);
@@ -293,4 +312,4 @@ const Team = () => {
   );
 };
 
-export default Team;
+export default withRouter(Team);
