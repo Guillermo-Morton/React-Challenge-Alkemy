@@ -14,6 +14,7 @@ import {
   Title,
   Btn,
 } from "./TeamElements";
+import Swal from "sweetalert2";
 const Team = (props) => {
   const [teams, setTeams] = useState([]);
   const [test, setTest] = useState([]);
@@ -49,39 +50,73 @@ const Team = (props) => {
   }
   const deleteHero = (id, key, state, array) => {
     let filteredTeams = [];
-    for (let i in array) {
-      // filtramos los heroes que NO queremos eliminar
-      const filteredHeroes = array[i].filter((e) => e.id !== id);
-      filteredTeams.push(filteredHeroes);
-      // Actualizamos el localstorage
-    }
-    for (let i in filteredTeams) {
-      if (filteredTeams[i].length === 0) {
-        filteredTeams.splice(i, 1);
-        localStorage.setItem(key, JSON.stringify(filteredTeams));
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You can't revert this action",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes",
+      cancelButtonText: "No",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        for (let i in array) {
+          // filtramos los heroes que NO queremos eliminar
+          const filteredHeroes = array[i].filter((e) => e.id !== id);
+          filteredTeams.push(filteredHeroes);
+          // Actualizamos el localstorage
+        }
+        for (let i in filteredTeams) {
+          if (filteredTeams[i].length === 0) {
+            filteredTeams.splice(i, 1);
+            localStorage.setItem(key, JSON.stringify(filteredTeams));
+          } else {
+            localStorage.setItem(key, JSON.stringify(filteredTeams));
+          }
+        }
+        state(filteredTeams);
+        Swal.fire("Good job!", "Deleted!", "success");
       } else {
-        localStorage.setItem(key, JSON.stringify(filteredTeams));
+        return;
       }
-    }
-    state(filteredTeams);
+    });
+   
   };
   const completeTeam = (id, key, state, array) => {
     const incompleteTeam = array[id].heroes;
+    const setLocal=()=>{
+      localStorage.setItem(key, JSON.stringify(incompleteTeam));
+      let _filteredTeams = [];
+      const filteredTeam = array.filter((e) => e.id !== id);
+      for (let i in filteredTeam) {
+        _filteredTeams.push(filteredTeam[i].heroes);
+      }
+      localStorage.setItem("teamsKey", JSON.stringify(_filteredTeams));
+      state(filteredTeam);
+      props.history.push('/search')
+    }
     if(JSON.parse(localStorage.getItem(key)).length===0){
-      console.log('Todo joya')
+      setLocal()
     }else{
-      console.log('hay un equipo en creacion/edicion')
-      return
+      Swal.fire({
+        title: "¿There is a team in creation/edition",
+        text: "Do you want to overwrite it",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes",
+        cancelButtonText: "No",
+      }).then((result)=>{
+        if (result.isConfirmed) {
+          setLocal()
+        }else{
+          return
+        }
+      })
     }
-    localStorage.setItem(key, JSON.stringify(incompleteTeam));
-    let _filteredTeams = [];
-    const filteredTeam = array.filter((e) => e.id !== id);
-    for (let i in filteredTeam) {
-      _filteredTeams.push(filteredTeam[i].heroes);
-    }
-    localStorage.setItem("teamsKey", JSON.stringify(_filteredTeams));
-    state(filteredTeam);
-    props.history.push('/search')
+   
   };
   const getTeamStats = () => {
     for (let e of _teams) {
@@ -142,7 +177,6 @@ const Team = (props) => {
   };
   const token = JSON.parse(localStorage.getItem("tokenKey")) || "";
   const redirectLogin = () => {
-    console.log(token);
     if (
       token !==
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiZW1haWwiOiJjaGFsbGVuZ2VAYWxrZW15Lm9yZyIsImlhdCI6MTUxNjIzOTAyMn0.ilhFPrG0y7olRHifbjvcMOlH7q2YwlegT0f4aSbryBE"

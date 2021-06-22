@@ -11,6 +11,7 @@ import {
   HeroTitle,
   HeroText,
 } from "./SearchElements";
+import Swal from "sweetalert2";
 
 export const deleteHero = (id, key, state, array) => {
   // filtramos los heroes que NO queremos eliminar
@@ -87,7 +88,11 @@ const Search = (props) => {
         if (_selectedHeroes.length < 6) {
           // Los heroes no se pueden agregar mas de una vez por equipo
           if (_selectedHeroes.filter((e) => e.id === id).length > 0) {
-            console.log("cant choose the same hero twice");
+            Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: "Can't choose the same hero twice!",
+            });
           } else {
             // No se puede elegir mas de 3 heroes de la misma alineacion
             if (
@@ -96,15 +101,21 @@ const Search = (props) => {
                   e.biography.alignment === response.data.biography.alignment
               ).length > 2
             ) {
-              console.log(
-                "cant choose more than 3 heroes from the same alignment"
-              );
+              Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: "Can't choose more than 3 heroes from the same alignment!",
+              });
             } else {
               _selectedHeroes.push(response.data);
             }
           }
         } else {
-          console.log("Only up to 6 heroes per team");
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Only up to 6 heroes per team!",
+          });
         }
       })
       .catch(function (error) {
@@ -122,10 +133,33 @@ const Search = (props) => {
 
   const _teams = JSON.parse(localStorage.getItem("teamsKey")) || [];
   const confirmTeam = () => {
-    _teams.push(selectedHeroes);
-    localStorage.setItem("teamsKey", JSON.stringify(_teams));
-    localStorage.setItem("selectedHeroesKey", JSON.stringify([]));
-    setSelectedHeroes(undefined);
+    const _confirmTeam = () => {
+      _teams.push(selectedHeroes);
+      localStorage.setItem("teamsKey", JSON.stringify(_teams));
+      localStorage.setItem("selectedHeroesKey", JSON.stringify([]));
+      setSelectedHeroes(undefined);
+    };
+    if (JSON.parse(localStorage.getItem("selectedHeroesKey")).length > 5) {
+      _confirmTeam();
+    } else {
+      Swal.fire({
+        title: "Looks like your team is incomplete",
+        text: "Do you want to create the team anyway?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes",
+        cancelButtonText: "No",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          _confirmTeam();
+          Swal.fire("Good job!", "You created/changed a team!", "success");
+        } else {
+          return;
+        }
+      });
+    }
   };
 
   const getAllHeroes = () => {
@@ -133,7 +167,6 @@ const Search = (props) => {
       .get(`${URL}search/a`)
       .then(function (response) {
         // handle success
-        console.log(response);
         setAllHeroes(response.data.results);
       })
       .catch(function (error) {
@@ -146,7 +179,6 @@ const Search = (props) => {
   };
   const token = JSON.parse(localStorage.getItem("tokenKey")) || "";
   const redirectLogin = () => {
-    console.log(token);
     if (
       token !=
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiZW1haWwiOiJjaGFsbGVuZ2VAYWxrZW15Lm9yZyIsImlhdCI6MTUxNjIzOTAyMn0.ilhFPrG0y7olRHifbjvcMOlH7q2YwlegT0f4aSbryBE"
@@ -229,7 +261,10 @@ const Search = (props) => {
               <div className="d-flex flex-wrap">
                 {selectedHeroes &&
                   selectedHeroes.map((teamMember) => (
-                    <div key={teamMember.id + 1234} className="col-lg-4 col-md-6 col-12">
+                    <div
+                      key={teamMember.id + 1234}
+                      className="col-lg-4 col-md-6 col-12"
+                    >
                       <HeroCard>
                         <HeroImg src={teamMember.image.url} />
                         <HeroDetails>
@@ -265,39 +300,39 @@ const Search = (props) => {
         <section>
           {hero && hero.length > 0 ? (
             <div>
-              <hr className='my-5' />
-              <h3 className='mb-3'>Results for {search && search}</h3>
+              <hr className="my-5" />
+              <h3 className="mb-3">Results for {search && search}</h3>
               <div className="d-flex flex-wrap">
                 {hero.map((hero) => (
-                    <div className="col-md-6 col-sm-12" key={hero.id}>
-                      <HeroCard>
-                        <HeroImg src={hero.image.url} />
-                        <HeroDetails>
-                          <HeroTitle>{hero.name}</HeroTitle>
-                          <HeroText>
-                            {hero.biography.alignment === "good"
-                              ? "Hero"
-                              : hero.biography.alignment === "bad"
-                              ? "Villain"
-                              : "Neutral"}
-                          </HeroText>
-                          <HeroText>{hero.mainPs}</HeroText>
-                          <HeroBtn
-                            onClick={() => {
-                              getHero(hero.id);
-                            }}
-                          >
-                            ADD TO TEAM
-                          </HeroBtn>
-                        </HeroDetails>
-                      </HeroCard>
-                    </div>
-                  ))}
+                  <div className="col-md-6 col-sm-12" key={hero.id}>
+                    <HeroCard>
+                      <HeroImg src={hero.image.url} />
+                      <HeroDetails>
+                        <HeroTitle>{hero.name}</HeroTitle>
+                        <HeroText>
+                          {hero.biography.alignment === "good"
+                            ? "Hero"
+                            : hero.biography.alignment === "bad"
+                            ? "Villain"
+                            : "Neutral"}
+                        </HeroText>
+                        <HeroText>{hero.mainPs}</HeroText>
+                        <HeroBtn
+                          onClick={() => {
+                            getHero(hero.id);
+                          }}
+                        >
+                          ADD TO TEAM
+                        </HeroBtn>
+                      </HeroDetails>
+                    </HeroCard>
+                  </div>
+                ))}
               </div>
             </div>
           ) : null}
         </section>
-        <hr className='my-5' />
+        <hr className="my-5" />
         <h3>All Heroes</h3>
         <section className="d-flex flex-wrap">
           {allHeroes &&
