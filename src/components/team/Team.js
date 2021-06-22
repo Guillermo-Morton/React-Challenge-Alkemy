@@ -51,7 +51,7 @@ const Team = (props) => {
     let filteredTeams = [];
     for (let i in array) {
       // filtramos los heroes que NO queremos eliminar
-      const filteredHeroes = array[i].filter((e) => e.id != id);
+      const filteredHeroes = array[i].filter((e) => e.id !== id);
       filteredTeams.push(filteredHeroes);
       // Actualizamos el localstorage
     }
@@ -67,9 +67,15 @@ const Team = (props) => {
   };
   const completeTeam = (id, key, state, array) => {
     const incompleteTeam = array[id].heroes;
+    if(JSON.parse(localStorage.getItem(key)).length===0){
+      console.log('Todo joya')
+    }else{
+      console.log('hay un equipo en creacion/edicion')
+      return
+    }
     localStorage.setItem(key, JSON.stringify(incompleteTeam));
     let _filteredTeams = [];
-    const filteredTeam = array.filter((e) => e.id != id);
+    const filteredTeam = array.filter((e) => e.id !== id);
     for (let i in filteredTeam) {
       _filteredTeams.push(filteredTeam[i].heroes);
     }
@@ -138,7 +144,7 @@ const Team = (props) => {
   const redirectLogin = () => {
     console.log(token);
     if (
-      token !=
+      token !==
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiZW1haWwiOiJjaGFsbGVuZ2VAYWxrZW15Lm9yZyIsImlhdCI6MTUxNjIzOTAyMn0.ilhFPrG0y7olRHifbjvcMOlH7q2YwlegT0f4aSbryBE"
     ) {
       props.history.push("/login");
@@ -237,7 +243,7 @@ const Team = (props) => {
                   </p>
                 </div>
               </div>
-              <TeamContainer>
+              <TeamContainer className='mx-auto'>
                 <InnerBorder />
                 <InnerBorder2 />
                 <InnerBorder3 />
@@ -347,7 +353,7 @@ const Team = (props) => {
 
                 {team.heroes.length < 6 ? (
                   <AddHeroe className='text-center col-lg-4 col-md-6 col-12'>
-                    <h4 class='pt-5'>
+                    <h4 class='pt-4'>
                       Looks like your team is incomplete
                     </h4>
                     <Btn

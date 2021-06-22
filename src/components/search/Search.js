@@ -3,6 +3,14 @@ import { Button, Card } from "react-bootstrap";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import { withRouter, useLocation } from "react-router-dom";
 import * as Yup from "yup";
+import {
+  HeroCard,
+  HeroImg,
+  HeroDetails,
+  HeroBtn,
+  HeroTitle,
+  HeroText,
+} from "./SearchElements";
 
 export const deleteHero = (id, key, state, array) => {
   // filtramos los heroes que NO queremos eliminar
@@ -17,6 +25,7 @@ const Search = (props) => {
 
   // Definimos nuestros states
   const [hero, setHeroSearched] = useState(undefined);
+  const [search, setSearch] = useState("");
   const [selectedHeroes, setSelectedHeroes] = useState(undefined);
   const [allHeroes, setAllHeroes] = useState(undefined);
   const [ok, setOk] = useState(false);
@@ -183,6 +192,7 @@ const Search = (props) => {
                   .get(`${URL}search/${values.search}`)
                   .then(function (response) {
                     // handle success
+                    setSearch(values.search);
                     setHeroSearched(response.data.results);
                   })
                   .catch(function (error) {
@@ -207,90 +217,114 @@ const Search = (props) => {
                 />
                 <ErrorMessage name="search" />
               </div>
-              <Button type="submit">Submit</Button>
+              <HeroBtn type="submit">Submit</HeroBtn>
             </Form>
           </Formik>
         </div>
-        <h3>Team preview</h3>
-        <section className="row">
-          {selectedHeroes &&
-            selectedHeroes.map((teamMember) => (
-              <div key={teamMember.id + 1234} className="col-lg-4">
-                <p>{teamMember.name}</p>
-                <Button
-                  onClick={() => {
-                    deleteHero(
-                      teamMember.id,
-                      "selectedHeroesKey",
-                      setSelectedHeroes,
-                      _selectedHeroes
-                    );
-                  }}
-                >
-                  Delete
-                </Button>
+
+        <section>
+          {selectedHeroes && selectedHeroes.length > 0 ? (
+            <div>
+              <h3 className="mb-4">Team preview</h3>
+              <div className="d-flex flex-wrap">
+                {selectedHeroes &&
+                  selectedHeroes.map((teamMember) => (
+                    <div key={teamMember.id + 1234} className="col-lg-4 col-md-6 col-12">
+                      <HeroCard>
+                        <HeroImg src={teamMember.image.url} />
+                        <HeroDetails>
+                          <HeroText className="text-center">
+                            {teamMember.name}
+                          </HeroText>
+                          <HeroBtn
+                            onClick={() => {
+                              deleteHero(
+                                teamMember.id,
+                                "selectedHeroesKey",
+                                setSelectedHeroes,
+                                _selectedHeroes
+                              );
+                            }}
+                          >
+                            Delete
+                          </HeroBtn>
+                        </HeroDetails>
+                      </HeroCard>
+                    </div>
+                  ))}
               </div>
-            ))}
-          <Button onClick={confirmTeam} className="my-3 ml-auto">
-            Confirm team
-          </Button>
+              <HeroBtn
+                onClick={confirmTeam}
+                className="my-3 mx-auto d-block w-50"
+              >
+                Confirm team
+              </HeroBtn>
+            </div>
+          ) : null}
         </section>
-        <section className="row">
-          {hero &&
-            hero.map((hero) => (
-              <div className="col-lg-4 col-md-6 col-sm-12" key={hero.id}>
-                <Card className="w-100 h-100">
-                  <Card.Img variant="top" src={hero.image.url} />
-                  <Card.Body>
-                    <Card.Title>{hero.name}</Card.Title>
-                    <Card.Text>
-                      {hero.biography.alignment === "good"
-                        ? "Hero"
-                        : hero.biography.alignment === "bad"
-                        ? "Villain"
-                        : "Neutral"}
-                    </Card.Text>
-                    <Card.Text>{hero.mainPs}</Card.Text>
-                    <Button
-                      onClick={() => {
-                        getHero(hero.id);
-                      }}
-                      variant="success"
-                    >
-                      ADD TO TEAM
-                    </Button>
-                  </Card.Body>
-                </Card>
+        <section>
+          {hero && hero.length > 0 ? (
+            <div>
+              <hr className='my-5' />
+              <h3 className='mb-3'>Results for {search && search}</h3>
+              <div className="d-flex flex-wrap">
+                {hero.map((hero) => (
+                    <div className="col-md-6 col-sm-12" key={hero.id}>
+                      <HeroCard>
+                        <HeroImg src={hero.image.url} />
+                        <HeroDetails>
+                          <HeroTitle>{hero.name}</HeroTitle>
+                          <HeroText>
+                            {hero.biography.alignment === "good"
+                              ? "Hero"
+                              : hero.biography.alignment === "bad"
+                              ? "Villain"
+                              : "Neutral"}
+                          </HeroText>
+                          <HeroText>{hero.mainPs}</HeroText>
+                          <HeroBtn
+                            onClick={() => {
+                              getHero(hero.id);
+                            }}
+                          >
+                            ADD TO TEAM
+                          </HeroBtn>
+                        </HeroDetails>
+                      </HeroCard>
+                    </div>
+                  ))}
               </div>
-            ))}
+            </div>
+          ) : null}
         </section>
+        <hr className='my-5' />
         <h3>All Heroes</h3>
-        <section className="row">
+        <section className="d-flex flex-wrap">
           {allHeroes &&
             allHeroes.map((hero) => (
-              <div className="col-lg-4 col-md-6 col-sm-12" key={hero.id + 5555}>
-                <Card className="w-100 h-100">
-                  <Card.Img variant="top" src={hero.image.url} />
-                  <Card.Body>
-                    <Card.Title>{hero.name}</Card.Title>
-                    <Card.Text>
+              <div className="col-md-6 col-sm-12" key={hero.id + 5555}>
+                <HeroCard>
+                  <HeroImg src={hero.image.url} />
+                  <HeroDetails>
+                    <HeroTitle>{hero.name}</HeroTitle>
+                    <HeroText>
                       {hero.biography.alignment === "good"
                         ? "Hero"
                         : hero.biography.alignment === "bad"
                         ? "Villain"
                         : "Neutral"}
-                    </Card.Text>
-                    <Card.Text>{hero.mainPs}</Card.Text>
-                    <Button
+                    </HeroText>
+                    <HeroText>{hero.mainPs}</HeroText>
+                    <HeroBtn
                       onClick={() => {
                         getHero(hero.id);
                       }}
                       variant="success"
                     >
                       ADD TO TEAM
-                    </Button>
-                  </Card.Body>
-                </Card>
+                    </HeroBtn>
+                  </HeroDetails>
+                </HeroCard>
               </div>
             ))}
         </section>

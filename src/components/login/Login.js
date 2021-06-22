@@ -4,6 +4,8 @@ import { Formik, Field, Form, ErrorMessage } from "formik";
 import { withRouter } from "react-router";
 import * as Yup from "yup";
 
+import {Btn} from './LoginElements'
+
 const Login = (props) => {
   // const token= '4060184407368673'
   // const URL=`https://superheroapi.com/api/${token}/`
@@ -81,7 +83,7 @@ const Login = (props) => {
               <ErrorMessage name="pass" />
             </div>
 
-            <Button type="submit">Submit</Button>
+            <Btn type="submit">Submit</Btn>
           </Form>
         </Formik>
       </div>

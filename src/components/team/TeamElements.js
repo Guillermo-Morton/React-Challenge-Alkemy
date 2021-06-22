@@ -2,26 +2,27 @@ import styled from "styled-components";
 
 export const TeamContainer = styled.div`
   border-radius: 50px;
-  width: 100%;
+  width: 85%;
   border: 1px solid #909090;
   position: relative;
   display:flex;
   flex-wrap:wrap;
   margin: 0 0 5rem 0;
   @media screen and (max-width: 767px) {
+    width: 95%;
     border-top: none;
     border-radius: 30px;
   }
 `;
 export const HeroContainer = styled.div`
   width: 33.33%;
-  height:43rem;
+  height:44rem;
   padding:0;
-  @media screen and (max-width: 1025px) {
-    height:45rem;
-  }
-  @media screen and (max-width: 767px) {
+  @media screen and (max-width: 1200px) {
     height:50rem;
+  }
+  @media screen and (max-width: 400px) {
+    height:57rem;
   }
 `;
 export const HeroName = styled.h2`
@@ -125,10 +126,7 @@ right:33.33%;
     top:33.33%
   }
   @media screen and (max-width: 767px) {
-    width:100%;
-    height:1px;
-    right:0;
-    top:19.5%
+    display:none;
   }  
 }
 `;
@@ -171,13 +169,17 @@ export const Btn = styled.button`
   font-weight: 500;
   transition: all 0.2s ease-in-out;
   text-decoration: none;
-  margin: 1rem 0;
+  margin: 0.5rem 0 1rem 0;
   align-self:center;
 
   &:hover {
     transition: all 0.4s ease-in-out;
     background: #d43333;
   }
+  @media screen and (max-width: 340px) {
+    margin:0 0 1rem 0;
+    width:80%!important;
+  }  
 `;
 export const AddHeroe = styled.div`
 align-self:center;
