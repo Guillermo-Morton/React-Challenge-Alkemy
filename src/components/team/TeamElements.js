@@ -1,5 +1,8 @@
 import styled from "styled-components";
 
+export const TeamsContainer= styled.div`
+min-height:67vh;
+`
 export const TeamContainer = styled.div`
   border-radius: 50px;
   width: 85%;

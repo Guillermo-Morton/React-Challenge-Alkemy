@@ -13,6 +13,7 @@ import {
   AddHeroe,
   Title,
   Btn,
+  TeamsContainer
 } from "./TeamElements";
 import Swal from "sweetalert2";
 const Team = (props) => {
@@ -100,8 +101,8 @@ const Team = (props) => {
       setLocal()
     }else{
       Swal.fire({
-        title: "¿There is a team in creation/edition",
-        text: "Do you want to overwrite it",
+        title: "There is a team in creation/edition",
+        text: "Do you want to overwrite it?",
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#3085d6",
@@ -213,7 +214,14 @@ const Team = (props) => {
   }, [location.pathname]);
 
   return (
-    <div className="container">
+    <TeamsContainer className="container">
+      {teams && teams.length===0 ? 
+      <TeamsContainer className='container d-flex align-items-center justify-content-center'>
+        <div>
+      <h3 className='display-4 text-center'>No teams created</h3>
+<p className='text-center'>You can try making one on our heroes section!</p>
+        </div>
+      </TeamsContainer>: null}
       {teams &&
         teams.map((team) => (
           <div>
@@ -280,7 +288,8 @@ const Team = (props) => {
               <TeamContainer className='mx-auto'>
                 <InnerBorder />
                 <InnerBorder2 />
-                <InnerBorder3 />
+                {team.heroes.length<4 ? null : <InnerBorder3 />}
+               
                   {team.heroes &&
                     team.heroes.map((hero) => (
                       <HeroContainer
@@ -384,8 +393,8 @@ const Team = (props) => {
                         </div>
                       </HeroContainer>
                     ))}
-
                 {team.heroes.length < 6 ? (
+                  
                   <AddHeroe className='text-center col-lg-4 col-md-6 col-12'>
                     <h4 class='pt-4'>
                       Looks like your team is incomplete
@@ -409,7 +418,7 @@ const Team = (props) => {
             </div>
           </div>
         ))}
-    </div>
+    </TeamsContainer>
   );
 };
 

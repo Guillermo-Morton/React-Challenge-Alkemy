@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Button, Card } from "react-bootstrap";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import { withRouter, useLocation } from "react-router-dom";
 import * as Yup from "yup";
@@ -10,6 +9,7 @@ import {
   HeroBtn,
   HeroTitle,
   HeroText,
+  SearchContainer
 } from "./SearchElements";
 import Swal from "sweetalert2";
 
@@ -180,7 +180,7 @@ const Search = (props) => {
   const token = JSON.parse(localStorage.getItem("tokenKey")) || "";
   const redirectLogin = () => {
     if (
-      token !=
+      token !==
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiZW1haWwiOiJjaGFsbGVuZ2VAYWxrZW15Lm9yZyIsImlhdCI6MTUxNjIzOTAyMn0.ilhFPrG0y7olRHifbjvcMOlH7q2YwlegT0f4aSbryBE"
     ) {
       props.history.push("/login");
@@ -210,7 +210,7 @@ const Search = (props) => {
   }, [location.pathname]);
 
   return (
-    <div>
+    <SearchContainer>
       <div className="container">
         <div className="w-50 mx-auto my-5">
           <Formik
@@ -364,7 +364,7 @@ const Search = (props) => {
             ))}
         </section>
       </div>
-    </div>
+    </SearchContainer>
   );
 };
 

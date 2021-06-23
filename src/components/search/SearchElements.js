@@ -1,5 +1,8 @@
 import styled from "styled-components";
 
+export const SearchContainer= styled.div`
+min-height:79vh;
+`
 export const HeroCard = styled.div`
 display:flex;
 border-radius:30px;

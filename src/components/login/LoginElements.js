@@ -19,3 +19,6 @@ export const Btn = styled.button`
     background: #d43333;
   }
 `;
+export const LoginContainer= styled.div`
+min-height:79vh;
+`
