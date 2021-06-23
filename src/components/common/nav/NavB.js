@@ -34,7 +34,7 @@ const NavB = (props) => {
       </NavLink>
     );
   return (
-    <Navbar bg="light" expand="lg">
+    <Navbar bg="light" expand="md">
       <div className="container">
         <NavLink className="navbar-brand" exact={true} to="/">
           Heroes Challenge

@@ -1,0 +1,21 @@
+.fadeIn{
+    -webkit-animation: fadeIn 0.3s;
+    animation: fadeIn 0.3s;
+    animation-fill-mode: forwards;
+}
+@keyframes fadeIn {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 0.9;
+    }
+  }
+  @-webkit-keyframes fadeIn {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 0.9;
+    }
+  }

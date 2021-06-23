@@ -250,37 +250,37 @@ const Team = (props) => {
                   <p className="d-inline mx-3">
                     Inteligence:
                     {team.powerstats[0] === "null"
-                      ? "Unknown"
+                      ? <small>None</small>
                       : " " + team.powerstats[0]}
                   </p>
                   <p className="d-inline mx-3">
                     Strength:
                     {team.powerstats[1] === "null"
-                      ? "Unknown"
+                      ? <small>None</small>
                       : " " + team.powerstats[1]}
                   </p>
                   <p className="d-inline mx-3">
                     Speed:
                     {team.powerstats[2] === "null"
-                      ? "Unknown"
+                      ? <small>None</small>
                       : " " + team.powerstats[2]}
                   </p>
                   <p className="d-inline mx-3">
                     Durability:
                     {team.powerstats[3] === "null"
-                      ? "Unknown"
+                      ? <small>None</small>
                       : " " + team.powerstats[3]}
                   </p>
                   <p className="d-inline mx-3">
                     Power:
                     {team.powerstats[4] === "null"
-                      ? "Unknown"
+                      ? <small>None</small>
                       : " " + team.powerstats[4]}
                   </p>
                   <p className="d-inline mx-3">
                     Combat:
                     {team.powerstats[5] === "null"
-                      ? "Unknown"
+                      ? <small>None</small>
                       : " " + team.powerstats[5]}
                   </p>
                 </div>
@@ -346,19 +346,19 @@ const Team = (props) => {
                               <p className="mb-4">
                                 Intelligence:{" "}
                                 {hero.powerstats.intelligence === "null"
-                                  ? "Unknown"
+                                  ? <small>None</small>
                                   : hero.powerstats.intelligence}
                               </p>
                               <p className="mb-4">
                                 Strength:{" "}
                                 {hero.powerstats.strength === "null"
-                                  ? "Unknown"
+                                  ? <small>None</small>
                                   : hero.powerstats.strength}
                               </p>
                               <p className="mb-4">
                                 Speed:{" "}
                                 {hero.powerstats.speed === "null"
-                                  ? "Unknown"
+                                  ? <small>None</small>
                                   : hero.powerstats.speed}
                               </p>
                             </div>
@@ -366,19 +366,19 @@ const Team = (props) => {
                               <p className="mb-4">
                                 Durability:{" "}
                                 {hero.powerstats.durability === "null"
-                                  ? "Unknown"
+                                  ? <small>None</small>
                                   : hero.powerstats.durability}
                               </p>
                               <p className="mb-4">
                                 Power:{" "}
                                 {hero.powerstats.power === "null"
-                                  ? "Unknown"
+                                  ? <small>None</small>
                                   : hero.powerstats.power}
                               </p>
                               <p className="mb-4">
                                 Combat:{" "}
                                 {hero.powerstats.combat === "null"
-                                  ? "Unknown"
+                                  ? <small>None</small>
                                   : hero.powerstats.combat}
                               </p>
                             </div>
@@ -407,6 +407,7 @@ const Team = (props) => {
                           setTeams,
                           teams
                         );
+                        props.toggleScroll()
                       }}
                       className="w-50"
                     >

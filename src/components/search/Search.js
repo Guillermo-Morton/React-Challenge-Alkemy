@@ -12,6 +12,8 @@ import {
   SearchContainer
 } from "./SearchElements";
 import Swal from "sweetalert2";
+import LoadingScreen from "./LoadingScreen";
+import './loading.scss'
 
 export const deleteHero = (id, key, state, array) => {
   // filtramos los heroes que NO queremos eliminar
@@ -163,6 +165,7 @@ const Search = (props) => {
   };
 
   const getAllHeroes = () => {
+    setOk(false);
     axios
       .get(`${URL}search/a`)
       .then(function (response) {
@@ -174,7 +177,10 @@ const Search = (props) => {
         console.log(error);
       })
       .then(function () {
-        setOk(!ok);
+        setTimeout(()=>{
+          setOk(true);
+
+        },200)
       });
   };
   const token = JSON.parse(localStorage.getItem("tokenKey")) || "";
@@ -209,9 +215,13 @@ const Search = (props) => {
     redirectLogin();
   }, [location.pathname]);
 
+  const showLoad = ok === true ? "" : "d-none";
+  const hideLoad = ok === false ? "" : "d-none";
+
   return (
     <SearchContainer>
-      <div className="container">
+      <SearchContainer className={hideLoad}><LoadingScreen/></SearchContainer>
+      <div className={`container fadeIn ${showLoad}`}>
         <div className="w-50 mx-auto my-5">
           <Formik
             initialValues={{ search: "" }}
@@ -219,6 +229,7 @@ const Search = (props) => {
               search: Yup.string().required("Required"),
             })}
             onSubmit={(values, { setSubmitting }) => {
+              setOk(false);
               setTimeout(() => {
                 axios
                   .get(`${URL}search/${values.search}`)
@@ -232,7 +243,7 @@ const Search = (props) => {
                     console.log(error);
                   })
                   .then(function () {
-                    setOk(!ok);
+                    setOk(true);
                   });
                 setSubmitting(false);
               }, 390);

@@ -1,11 +1,11 @@
 import React from 'react';
 import Team from './team/Team';
 
-const Home = () => {
+const Home = (props) => {
     return (
         <div className='container'>
            <h2 className='font-weight-light text-center mt-5'>TEAMS</h2>
-           <Team></Team>
+           <Team toggleScroll={props.toggleScroll}></Team>
         </div>
     );
 };

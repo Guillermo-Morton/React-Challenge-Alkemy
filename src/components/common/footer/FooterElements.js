@@ -13,6 +13,11 @@ import { FaLinkedinIn } from "react-icons/fa";
     color:#fff;
     cursor: pointer;
     margin: 0 1rem;
+    
+  &:hover {
+   transition: all 0.4s ease-in-out;
+   color:#999999;
+ }
  `
 
  export const Footer= styled.div`
